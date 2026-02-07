@@ -1,0 +1,66 @@
+---
+description: Project structure, component splitting (no long components), and code style for Next.js apps. Use package.json for dependencies.
+alwaysApply: true
+---
+
+# Project structure and components
+
+Follow this structure and style so the agent matches how the project is organized and how components are split. Do **not** assume or add packages: read the project's `package.json` (and lockfile if needed) and use only installed dependencies. If a feature needs a new dependency, ask the user first.
+
+---
+
+## 1. Project structure
+
+- **App / routes:** Next.js App Router. Use route groups for areas (e.g. `(auth)`, `(public)`) and a dedicated segment for the authenticated area (e.g. `user`). Add `[locale]` only if the project uses i18n.
+- **Route-scoped code:** For each route/layout area:
+  - `_components/` — components used only in that area (e.g. `public-footer`, `signup`, `user-header`).
+  - `_hooks/` — hooks used only in that area (e.g. `use-listing-filters`, `use-add-listing-form`).
+- **Global shared code under `src/`:**
+  - `components/` — shared UI primitives (e.g. `ui/`), shared feature components (e.g. `product/card`, `data-table`, `modal`).
+  - `hooks/`, `lib/`, `constants/`, `interfaces/`, `services/`, `providers/`, `boundaries/`, `assets/`, `i18n/` as needed.
+- **Path aliases:** Use the project's `tsconfig` paths. Prefer route-scoped aliases when they exist (e.g. `@/public/*`, `@/auth/*`, `@/user/*`) and a general alias for `src/*` (e.g. `@/*`).
+
+---
+
+## 2. No long components / how to split
+
+- **Pages:** Keep pages thin. Only: locale/params handling (e.g. `setRequestLocale` if i18n) and a single section or feature component.
+
+```tsx
+// Good: thin page
+const SignupPage = async ({ params }: TPage) => {
+  const { locale } = await params;
+  setRequestLocale(locale as Locale);
+  return <Signup />;
+};
+export default SignupPage;
+```
+
+- **Feature/section folders:** One main composition file (often `index.tsx`) that only composes smaller pieces. Put each piece in its own file (e.g. `product-item.tsx`, `product-list.tsx`, `signup-form.tsx`).
+- **When to split:** If a component would exceed ~80–100 lines or has multiple clear responsibilities, extract subcomponents or hooks into separate files. Small one-off pieces (e.g. a button group, a few inline items) can stay as local components in the same file.
+- **Compound components:** For reusable building blocks (cards, lists), prefer one file that exports multiple related components (e.g. `ProductCard`, `ProductHeader`, `ProductBody`, `ProductPrice`) so consumers compose via props/children.
+- **Barrel exports:** Use `index.ts` / `index.tsx` to re-export section or feature components so pages import from the folder (e.g. `from '@/public/_components/public-sections'`).
+
+---
+
+## 3. Forms and client-only UI
+
+- **Form logic:** Put in a custom hook (e.g. `useSignupForm`, `useContactForm`) — schema, form library, mutation, submit handler. Return the form API plus `onSubmit`, `isPending`, `isSuccess`.
+- **Form UI:** One presentational component that uses that hook and renders fields. Keep the hook in the same file when it’s only used there; otherwise extract to `_hooks` or shared `hooks/`.
+- **Client boundaries:** For client-only forms or auth-dependent UI, use a boundary/wrapper with a fallback (skeleton or loader). Use dynamic import with a loading state instead of one large client component.
+
+---
+
+## 4. Code style
+
+- **Imports:** Order: builtin → external → internal (path alias) → parent/sibling → index. Newlines between groups; alphabetize within groups. Use path aliases consistently.
+- **Exports:** Prefer named exports for components and hooks (e.g. `export const SignupForm`, `export const useListingFilters`).
+- **Naming:** Files and folders in kebab-case (e.g. `signup-form.tsx`, `public-footer`, `listing-item.tsx`). Component names in PascalCase.
+- **Types:** Put shared types in a dedicated folder (e.g. `interfaces/`). For Next.js page/layout props, follow existing global types (e.g. `TPage`, `TLayout`) if the project defines them.
+- **Services / API:** Prefer a single entry (e.g. `services/index.ts`) that exposes a namespaced API (e.g. `public`, `auth`). Consume via a provider and a hook (e.g. `useApiServices()`) rather than importing service instances in many places. Use whatever HTTP/client the project already uses (from `package.json`).
+
+---
+
+## 5. Packages
+
+Do not assume or add packages. Read the project's `package.json` (and lockfile if needed) and use only dependencies that are already installed. If a feature requires a new dependency, ask the user first.

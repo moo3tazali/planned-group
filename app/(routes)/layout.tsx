@@ -1,7 +1,7 @@
 import { Abhaya_Libre, IBM_Plex_Sans } from 'next/font/google';
 
 import type { Metadata } from 'next';
-import './globals.css';
+import '../globals.css';
 
 const abhayaLibre = Abhaya_Libre({
   variable: '--font-abhaya-libre',
