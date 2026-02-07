@@ -6,7 +6,6 @@ import {
   Menu01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import Link from 'next/link';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -22,9 +21,9 @@ export function PublicHeader() {
     <header className='fixed inset-x-0 top-0 z-50 bg-background/80 backdrop-blur-md'>
       <div className='mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8'>
         {/* Logo */}
-        <Link href={'/' as never} className='shrink-0'>
+        <a href={'#hero'} className='shrink-0'>
           <Logo className='h-8 w-auto sm:h-10' />
-        </Link>
+        </a>
 
         {/* Desktop nav */}
         <nav className='hidden items-center gap-8 md:flex'>

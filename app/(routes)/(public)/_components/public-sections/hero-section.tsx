@@ -8,7 +8,10 @@ import { HERO_DATA } from './data';
 
 export function HeroSection() {
   return (
-    <section className='relative flex min-h-[90vh] items-center justify-center overflow-hidden sm:min-h-screen'>
+    <section
+      id='hero'
+      className='relative flex min-h-[90vh] items-center justify-center overflow-hidden sm:min-h-screen'
+    >
       {/* Background image */}
       <Image
         src={HERO_DATA.backgroundImage}
