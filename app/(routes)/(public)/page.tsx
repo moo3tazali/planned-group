@@ -1,13 +1,23 @@
-import { Button } from '@/components/ui/button';
-import { Logo } from '@/icons/logo';
+import {
+  AboutSection,
+  CtaSection,
+  HeroSection,
+  ProjectsSection,
+  ServicesSection,
+  StatsSection,
+  WhyChooseUsSection,
+} from './_components/public-sections';
 
 export default function Page() {
   return (
-    <div className=''>
-      <h1 className='text-4xl font-extrabold'>Planned Group</h1>
-      <p className='text-lg'>Planned Group is a company that plans groups.</p>
-      <Button>Click me</Button>
-      <Logo className='size-20' />
-    </div>
+    <main>
+      <HeroSection />
+      <AboutSection />
+      <StatsSection />
+      <ServicesSection />
+      <ProjectsSection />
+      <WhyChooseUsSection />
+      <CtaSection />
+    </main>
   );
 }
